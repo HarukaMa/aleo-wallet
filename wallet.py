@@ -15,7 +15,11 @@ from wallet import main
 
 if __name__ == '__main__':
     # noinspection PyTypeChecker
-    lockfile = appdirs.user_data_dir("WalletDev", False) + "/wallet.lock"
+
+    data_path = appdirs.user_data_dir("WalletDev", False)
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    lockfile = data_path + "/wallet.lock"
     pathlib.Path(lockfile).touch()
     if is_windows:
         try:
