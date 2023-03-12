@@ -56,7 +56,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Splash</string>
+      <string>Initializing wallet...</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
