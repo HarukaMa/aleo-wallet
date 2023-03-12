@@ -24,6 +24,10 @@ def get_path_string(path: [int]) -> str:
         return "m"
     return "m/" + "/".join([str(x - 0x80000000) + "'" for x in path])
 
+def get_path_string_assume_hardened(path: [int]) -> str:
+    if not path:
+        return "m"
+    return "m/" + "/".join([str(x) + "'" for x in path])
 
 def _generate_master_node(seed) -> [bytes, bytes]:
     h = hmac.new(MASTER_SEED, digestmod=sha512)
@@ -62,6 +66,8 @@ class HDWallet:
         return Mnemonic("english").to_mnemonic(self.seed)
 
     def get_seed_for_path(self, path: str) -> [bytes, bytes]:
+        if path in self._seed_cache:
+            return self._seed_cache[path]
         path = parse_path(path)
         if not path:
             return self._seed_cache["m"]
