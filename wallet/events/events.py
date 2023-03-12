@@ -29,7 +29,6 @@ class EventDispatcher:
         self.event_queue = asyncio.Queue()
         self.event_handlers = defaultdict(lambda: [])
         self.event_receivers = []
-        aboutToQuit = QApplication.instance().aboutToQuit
         asyncio.create_task(self.dispatch_events())
 
     def register_event_handler(self, event_type: EventType, handler):
