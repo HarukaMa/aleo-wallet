@@ -10,6 +10,7 @@ from __feature__ import snake_case, true_property
 
 class EventType(IntEnum):
     InitStep = QEvent.register_event_type()
+    WalletLock = QEvent.register_event_type()
 
 
 class Event:

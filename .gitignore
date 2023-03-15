@@ -289,3 +289,4 @@ cython_debug/
 
 wallet/designer/*.py
 *.~is
+*.ipynb

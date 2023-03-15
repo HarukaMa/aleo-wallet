@@ -27,7 +27,7 @@ class ChainDB:
         if not os.path.exists(self.db_path) or os.path.getsize(self.db_path) == 0:
             await event_dispatcher.post_event(Event(EventType.InitStep, InitPhase.CreateChainDB))
             await self.create_db()
-        self.conn = await aiosqlite.connect(self.db_path)
+        self.conn = await aiosqlite.connect(self.db_path, isolation_level=None)
         self.conn.row_factory = aiosqlite.Row
         await event_dispatcher.post_event(Event(EventType.InitStep, InitPhase.CheckChainDB))
         await self.check_database()

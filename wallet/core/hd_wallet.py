@@ -1,5 +1,5 @@
 import hmac
-import secrets
+import os
 from hashlib import sha512
 
 from mnemonic import Mnemonic
@@ -52,9 +52,9 @@ class HDWallet:
 
     @classmethod
     def generate(cls, strength: int = 256):
-        seed = secrets.token_bytes(strength // 8)
+        seed = os.urandom(strength // 8)
         if _generate_master_node(seed)[0] == b"\x00" * 32:
-            seed = secrets.token_bytes(strength // 8)
+            seed = os.urandom(strength // 8)
             # you can't be this unlucky
         return cls(seed)
 
