@@ -1,5 +1,5 @@
+from .hd_wallet import HDWallet
 from ..chain_db import ChainDB
-from ..core import HDWallet
 from ..events.events import EventDispatcher, EventType, Event
 from ..utils.types import InitPhase
 
