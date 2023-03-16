@@ -16,15 +16,28 @@
     <height>480</height>
    </size>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>640</width>
-    <height>480</height>
-   </size>
-  </property>
-  <property name="windowTitle">
-   <string>Wallet Setup</string>
-  </property>
+     <property name="maximumSize">
+         <size>
+             <width>640</width>
+             <height>480</height>
+         </size>
+     </property>
+     <property name="windowTitle">
+         <string>Wallet Setup</string>
+     </property>
+     <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+             <rect>
+                 <x>550</x>
+                 <y>440</y>
+                 <width>75</width>
+                 <height>23</height>
+             </rect>
+         </property>
+         <property name="text">
+             <string>Close</string>
+         </property>
+     </widget>
  </widget>
  <resources/>
  <connections/>

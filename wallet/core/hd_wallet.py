@@ -4,6 +4,9 @@ from hashlib import sha512
 
 from mnemonic import Mnemonic
 
+from ..events import EventDispatcher
+from ..wallet_db import WalletDB
+
 MASTER_SEED = b"bls12_377 seed"
 
 
@@ -44,23 +47,35 @@ def _generate_key(seed: [bytes, bytes], index: int) -> [bytes, bytes]:
 
 
 class HDWallet:
-    def __init__(self, seed: bytes):
-        self.seed = seed
-        self._seed_cache: dict[str, [bytes, bytes]] = {
-            "m": _generate_master_node(seed)
-        }
+    def __init__(self, db: WalletDB):
+        self.seed = None
+        self._seed_cache: dict[str, [bytes, bytes]] = {}
+        self.wallet_db = db
+        self.closed = False
 
     @classmethod
-    def generate(cls, strength: int = 256):
+    async def create_wallet(cls, password: str, strength: int = 256):
         seed = os.urandom(strength // 8)
         if _generate_master_node(seed)[0] == b"\x00" * 32:
             seed = os.urandom(strength // 8)
             # you can't be this unlucky
-        return cls(seed)
+        return cls(await WalletDB.create_db(password, seed))
 
     @classmethod
-    def from_mnemonic(cls, mnemonic: str):
-        return cls(Mnemonic("english").to_entropy(mnemonic))
+    async def create_wallet_from_mnemonic(cls, password: str, mnemonic: str):
+        seed = Mnemonic("english").to_entropy(mnemonic)
+        return cls(await WalletDB.create_db(password, seed))
+
+    @classmethod
+    async def open(cls, event_dispatcher: EventDispatcher):
+        db = await WalletDB.open(event_dispatcher)
+        if db is None:
+            return None
+        return cls(db)
+
+    async def close(self):
+        await self.wallet_db.close()
+        self.closed = True
 
     def to_mnemonic(self) -> str:
         return Mnemonic("english").to_mnemonic(self.seed)
