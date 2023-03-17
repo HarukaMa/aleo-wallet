@@ -19,17 +19,16 @@ class OnboardingWidget(QWidget, Ui_onboarding):
     def on_next_clicked(self):
         self.close()
 
-    # noinspection PyUnresolvedReferences
     def close_event(self, event: QCloseEvent) -> None:
         if self.cancelled:
             event.accept()
             return
         event.ignore()
-        msgbox = QMessageBox(QMessageBox.Question, "Wallet not created",
+        msgbox = QMessageBox(QMessageBox.Icon.Question, "Wallet not created",
                              "You have not created a wallet. Do you want to exit the program?",
-                             QMessageBox.Yes | QMessageBox.No, self)
-        msgbox.button(QMessageBox.Yes).clicked.connect(qtinter.asyncslot(self.cancel_onboarding))
-        msgbox.button(QMessageBox.No).clicked.connect(msgbox.delete_later)
+                             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, self)
+        msgbox.button(QMessageBox.StandardButton.Yes).clicked.connect(qtinter.asyncslot(self.cancel_onboarding))
+        msgbox.button(QMessageBox.StandardButton.No).clicked.connect(msgbox.delete_later)
         QApplication.instance().aboutToQuit.connect(msgbox.delete_later)
         msgbox.show()
 
