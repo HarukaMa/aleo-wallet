@@ -30,7 +30,9 @@ class ChainDB:
         self.conn = await aiosqlite.connect(self.db_path, isolation_level=None)
         self.conn.row_factory = aiosqlite.Row
         await event_dispatcher.post_event(Event(EventType.InitStep, InitPhase.CheckChainDB))
-        await self.check_database()
+        errors = await self.check_database()
+        if errors:
+            raise RuntimeError("chain database integrity check failed: " + str(errors))
         return self
 
     async def close(self):
@@ -69,6 +71,14 @@ create table full_record
         constraint full_record_record_index_id_fk
             references record_index,
     record   blob    not null
+);
+
+create table serial_number
+(
+    sn     blob not null
+        constraint serial_number_pk
+            primary key,
+    height integer not null
 );
 
 create index record_index_is_private_index

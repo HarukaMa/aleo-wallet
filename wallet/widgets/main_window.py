@@ -22,6 +22,11 @@ class MainWindow(QMainWindow, Ui_main_window):
             self.onboarding_widget.show()
             self.hide()
             self.wallet_core.event_dispatcher.register_event_handler(EventType.OnboardingComplete, self.continue_init)
+            self.wallet_core.event_dispatcher.register_event_handler(EventType.OnboardingCancelled,
+                                                                     self.cancel_onboarding)
 
     async def continue_init(self, _: EventType):
         await self.wallet_core.reload_wallet()
+
+    async def cancel_onboarding(self, _: EventType):
+        self.close()

@@ -2,20 +2,20 @@
 <ui version="4.0">
  <class>onboarding</class>
  <widget class="QWidget" name="onboarding">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>640</width>
-    <height>480</height>
-   </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>640</width>
-    <height>480</height>
-   </size>
-  </property>
+     <property name="geometry">
+         <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>640</width>
+             <height>480</height>
+         </rect>
+     </property>
+     <property name="minimumSize">
+         <size>
+             <width>640</width>
+             <height>480</height>
+         </size>
+     </property>
      <property name="maximumSize">
          <size>
              <width>640</width>
@@ -31,7 +31,7 @@
                  <x>550</x>
                  <y>440</y>
                  <width>75</width>
-                 <height>23</height>
+                 <height>32</height>
              </rect>
          </property>
          <property name="text">

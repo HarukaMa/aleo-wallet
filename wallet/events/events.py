@@ -12,6 +12,7 @@ class EventType(IntEnum):
     InitStep = QEvent.register_event_type()
     NoWallet = QEvent.register_event_type()
     OnboardingComplete = QEvent.register_event_type()
+    OnboardingCancelled = QEvent.register_event_type()
     WalletLock = QEvent.register_event_type()
 
 

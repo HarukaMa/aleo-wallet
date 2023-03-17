@@ -48,6 +48,8 @@ class SplashWidget(QWidget, Ui_splash_widget):
                 self.progress_label.text = "Done"
                 main_window = MainWindow(self.wallet_core, self.onboarding)
                 main_window.show()
+                self.wallet_core.event_dispatcher.unregister_event_handler(EventType.InitStep, self.init_step)
+                self.wallet_core.event_dispatcher.unregister_event_handler(EventType.NoWallet, self.no_wallet)
                 self.close()
 
     async def no_wallet(self, _: Event):
