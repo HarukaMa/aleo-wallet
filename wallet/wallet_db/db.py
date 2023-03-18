@@ -102,9 +102,12 @@ class WalletDB:
         enc_master_key = self.encrypt(self.master_key, wallet_key)
         self.conn = await aiosqlite.connect(self.db_path, isolation_level=None)
         await self.conn.executescript("""
-            
+
 CREATE TABLE imported_private_key
 (
+    id integer not null
+        constraint imported_private_key_pk
+            primary key autoincrement,
     seed blob not null
 );
 
@@ -123,6 +126,16 @@ CREATE TABLE salt
     salt blob not null
 );
 
+CREATE TABLE record
+(
+    id integer not null
+        constraint record_pk
+            primary key autoincrement,
+    height integer not null,
+    ciphertext blob not null,
+    path text not null
+);
+
 CREATE TABLE transition_nonce
 (
     transition_id blob not null
@@ -130,6 +143,9 @@ CREATE TABLE transition_nonce
             primary key,
     nonce         blob not null
 );
+
+CREATE INDEX record_path_idx
+    ON record (path);
 
 CREATE TABLE version
 (
