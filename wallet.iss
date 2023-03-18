@@ -25,7 +25,7 @@ LicenseFile=COPYING
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputBaseFilename=mysetup
+OutputBaseFilename=WalletSetup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=classic
@@ -48,3 +48,21 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  case CurUninstallStep of
+    usPostUninstall:
+      begin
+        if FileExists(ExpandConstant('{localappdata}\WalletDev\chain.db')) then
+          // Display a message box
+          case SuppressibleMsgBox('Do you want to delete the blockchain database as well?'#13#10'Please note that you will need to sync from scratch again if you decide to reinstall the wallet.'#13#10''#13#10'The wallet database won''t be deleted.', mbConfirmation, MB_YESNO, IDNO) of 
+            IDYES: 
+              DeleteFile(ExpandConstant('{localappdata}\WalletDev\chain.db'));
+          end;
+      end;
+  end;
+end;
+
