@@ -133,7 +133,10 @@ CREATE TABLE record
             primary key autoincrement,
     height integer not null,
     ciphertext blob not null,
-    path text not null
+    path text,
+    imported_id integer
+        constraint record_imported_private_key_id_fk
+            references imported_private_key
 );
 
 CREATE TABLE transition_nonce
