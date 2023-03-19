@@ -2,29 +2,114 @@
 <ui version="4.0">
  <class>main_window</class>
  <widget class="QMainWindow" name="main_window">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>800</width>
-    <height>600</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>WalletDev</string>
-  </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>18</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="status_bar"/>
+     <property name="geometry">
+         <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>800</width>
+             <height>600</height>
+         </rect>
+     </property>
+     <property name="windowTitle">
+         <string>WalletDev</string>
+     </property>
+     <widget class="QWidget" name="centralwidget">
+         <widget class="QLabel" name="status_bar_label">
+             <property name="geometry">
+                 <rect>
+                     <x>0</x>
+                     <y>550</y>
+                     <width>41</width>
+                     <height>16</height>
+                 </rect>
+             </property>
+             <property name="text">
+                 <string>StatusBarLabel</string>
+             </property>
+         </widget>
+     </widget>
+     <widget class="QMenuBar" name="menubar">
+         <property name="geometry">
+             <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>800</width>
+                 <height>18</height>
+             </rect>
+         </property>
+         <widget class="QMenu" name="menuFile">
+             <property name="title">
+                 <string>&amp;File</string>
+             </property>
+             <addaction name="action_settings"/>
+             <addaction name="separator"/>
+             <addaction name="action_exit"/>
+         </widget>
+         <widget class="QMenu" name="menu_Wallet">
+             <property name="title">
+                 <string>&amp;Wallet</string>
+             </property>
+             <addaction name="action_lock"/>
+             <addaction name="action_unlock"/>
+             <addaction name="separator"/>
+             <addaction name="action_list_addresses"/>
+             <addaction name="action_import_private_key"/>
+         </widget>
+         <widget class="QMenu" name="menuHelp">
+             <property name="title">
+                 <string>Help</string>
+             </property>
+             <addaction name="action_about"/>
+         </widget>
+         <addaction name="menuFile"/>
+         <addaction name="menu_Wallet"/>
+         <addaction name="menuHelp"/>
+     </widget>
+     <widget class="QStatusBar" name="status_bar"/>
+     <action name="action_exit">
+         <property name="text">
+             <string>&amp;Exit</string>
+         </property>
+     </action>
+     <action name="action_settings">
+         <property name="text">
+             <string>&amp;Settings...</string>
+         </property>
+     </action>
+     <action name="action_lock">
+         <property name="text">
+             <string>&amp;Lock</string>
+         </property>
+         <property name="visible">
+             <bool>false</bool>
+         </property>
+     </action>
+     <action name="action_unlock">
+         <property name="text">
+             <string>&amp;Unlock...</string>
+         </property>
+     </action>
+     <action name="action_import_private_key">
+         <property name="enabled">
+             <bool>false</bool>
+         </property>
+         <property name="text">
+             <string>&amp;Import Private Key...</string>
+         </property>
+     </action>
+     <action name="action_about">
+         <property name="text">
+             <string>&amp;About</string>
+         </property>
+     </action>
+     <action name="action_list_addresses">
+         <property name="enabled">
+             <bool>false</bool>
+         </property>
+         <property name="text">
+             <string>&amp;List Addresses</string>
+         </property>
+     </action>
  </widget>
  <resources/>
  <connections/>

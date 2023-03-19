@@ -79,6 +79,10 @@ class HDWallet:
             return True
         return False
 
+    async def lock(self):
+        await self.wallet_db.lock()
+        self.seed = None
+
     async def close(self):
         await self.wallet_db.close()
         self.closed = True

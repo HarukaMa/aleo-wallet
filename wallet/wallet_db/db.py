@@ -66,6 +66,14 @@ class WalletDB:
         self.unlocked = True
         return True
 
+    async def lock(self):
+        if self.closed:
+            raise RuntimeError("wallet is closed")
+        if not self.unlocked:
+            return
+        self.master_key = None
+        self.unlocked = False
+
     async def get_master_seed(self) -> bytes:
         if not self.unlocked:
             raise RuntimeError("wallet is locked")
