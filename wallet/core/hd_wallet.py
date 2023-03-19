@@ -54,7 +54,7 @@ class HDWallet:
         self.closed = False
 
     @classmethod
-    async def create_wallet(cls, password: str, strength: int = 256):
+    async def create_wallet(cls, password: str, strength: int = 128):
         seed = os.urandom(strength // 8)
         if _generate_master_node(seed)[0] == b"\x00" * 32:
             seed = os.urandom(strength // 8)
@@ -73,8 +73,19 @@ class HDWallet:
             return None
         return cls(db)
 
+    async def unlock(self, password: str):
+        if await self.wallet_db.unlock(password):
+            self.seed = await self.wallet_db.get_master_seed()
+            return True
+        return False
+
     async def close(self):
         await self.wallet_db.close()
+        self.closed = True
+
+    async def destroy(self):
+        """WARNING: This should only be used during wallet creation!"""
+        await self.wallet_db.destroy()
         self.closed = True
 
     def to_mnemonic(self) -> str:

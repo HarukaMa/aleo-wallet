@@ -66,6 +66,12 @@ class WalletDB:
         self.unlocked = True
         return True
 
+    async def get_master_seed(self) -> bytes:
+        if not self.unlocked:
+            raise RuntimeError("wallet is locked")
+        async with self.conn.execute("SELECT seed FROM master_seed") as cursor:
+            return self.decrypt((await cursor.fetchone())[0])
+
     def decrypt(self, ciphertext, key=None) -> bytes:
         if len(ciphertext) < 48:
             raise ValueError("ciphertext is too short")
@@ -84,6 +90,13 @@ class WalletDB:
         aes = AES.new(key, AES.MODE_GCM, iv)
         ciphertext, tag = aes.encrypt_and_digest(plaintext)
         return aes.nonce + ciphertext + tag
+
+    async def destroy(self):
+        """WARNING: This should only be used during wallet creation!"""
+        if self.closed:
+            raise RuntimeError("wallet is closed")
+        await self.conn.close()
+        os.remove(self.db_path)
 
     @classmethod
     async def create_db(cls, password: str, master_seed: bytes, data_path=None):

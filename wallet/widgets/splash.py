@@ -1,6 +1,5 @@
 import asyncio
 
-import qtinter
 from PySide6.QtWidgets import QWidget, QMessageBox, QApplication
 # noinspection PyUnresolvedReferences
 from __feature__ import snake_case, true_property
@@ -19,7 +18,7 @@ class SplashWidget(QWidget, Ui_splash_widget):
         self.wallet_core = WalletCore()
         self.onboarding = False
         # noinspection PyUnresolvedReferences
-        QApplication.instance().aboutToQuit.connect(qtinter.asyncslot(self.wallet_core.stop))
+        QApplication.instance().aboutToQuit.connect(self.wallet_core.stop)
         asyncio.create_task(self.init())
 
     async def init(self):

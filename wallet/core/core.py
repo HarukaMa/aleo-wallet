@@ -1,3 +1,6 @@
+import asyncio
+import threading
+
 from .hd_wallet import HDWallet
 from ..chain_db import ChainDB
 from ..events.events import EventDispatcher, EventType, Event
@@ -16,8 +19,18 @@ class WalletCore:
             await self.event_dispatcher.post_event(Event(EventType.NoWallet, None))
         await self.event_dispatcher.post_event(Event(EventType.InitStep, InitPhase.Finish))
 
-    async def stop(self):
+    # stop is called in aboutToQuit, but the main thread will be closed very shortly after that
+    # so we need to run the stop task in a separate thread
+    def stop(self):
+        t = threading.Thread(target=self.stop_in_thread)
+        t.start()
+
+    async def stop_task(self):
         await self.chain_db.close()
+        await self.wallet.close()
+
+    def stop_in_thread(self):
+        asyncio.run(self.stop_task())
 
     async def reload_wallet(self) -> bool:
         self.wallet = await HDWallet.open(self.event_dispatcher)
