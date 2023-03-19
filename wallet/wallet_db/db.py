@@ -56,7 +56,7 @@ class WalletDB:
             return True
         async with self.conn.execute("SELECT salt FROM salt") as cursor:
             salt = (await cursor.fetchone())[0]
-        wallet_key = hashlib.scrypt(password.encode(), salt=salt, n=2 ** 16, r=16, p=1, maxmem=2 ** 28, dklen=32)
+        wallet_key = hashlib.scrypt(password.encode(), salt=salt, n=2 ** 14, r=16, p=1, maxmem=2 ** 28, dklen=32)
         async with self.conn.execute("SELECT key FROM master_wallet_key") as cursor:
             master_key = (await cursor.fetchone())[0]
         try:
@@ -119,7 +119,7 @@ class WalletDB:
             raise FileExistsError("wallet database already exists")
         self.master_key = os.urandom(32)
         salt = os.urandom(32)
-        wallet_key = hashlib.scrypt(password.encode(), salt=salt, n=2 ** 16, r=16, p=1, maxmem=2 ** 28, dklen=32)
+        wallet_key = hashlib.scrypt(password.encode(), salt=salt, n=2 ** 14, r=16, p=1, maxmem=2 ** 28, dklen=32)
         enc_master_key = self.encrypt(self.master_key, wallet_key)
         self.conn = await aiosqlite.connect(self.db_path, isolation_level=None)
         await self.conn.executescript("""
