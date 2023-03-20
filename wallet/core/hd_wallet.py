@@ -76,6 +76,7 @@ class HDWallet:
     async def unlock(self, password: str):
         if await self.wallet_db.unlock(password):
             self.seed = await self.wallet_db.get_master_seed()
+            self._seed_cache["m"] = _generate_master_node(self.seed)
             return True
         return False
 
