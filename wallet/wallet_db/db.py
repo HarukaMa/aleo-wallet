@@ -80,6 +80,17 @@ class WalletDB:
         async with self.conn.execute("SELECT seed FROM master_seed") as cursor:
             return self.decrypt((await cursor.fetchone())[0])
 
+    async def get_max_used_index(self) -> int:
+        if not self.unlocked:
+            raise RuntimeError("wallet is locked")
+        async with self.conn.execute("SELECT `index` FROM max_used_index") as cursor:
+            return (await cursor.fetchone())[0] or 0
+
+    async def set_max_used_index(self, index: int):
+        if not self.unlocked:
+            raise RuntimeError("wallet is locked")
+        await self.conn.execute("UPDATE max_used_index SET index = ?", (index,))
+
     def decrypt(self, ciphertext, key=None) -> bytes:
         if len(ciphertext) < 48:
             raise ValueError("ciphertext is too short")
@@ -122,63 +133,7 @@ class WalletDB:
         wallet_key = hashlib.scrypt(password.encode(), salt=salt, n=2 ** 14, r=16, p=1, maxmem=2 ** 28, dklen=32)
         enc_master_key = self.encrypt(self.master_key, wallet_key)
         self.conn = await aiosqlite.connect(self.db_path, isolation_level=None)
-        await self.conn.executescript("""
-
-CREATE TABLE imported_private_key
-(
-    id integer not null
-        constraint imported_private_key_pk
-            primary key autoincrement,
-    seed blob not null
-);
-
-CREATE TABLE master_wallet_key
-(
-    key blob not null
-);
-
-CREATE TABLE master_seed
-(
-    seed blob not null
-);
-
-CREATE TABLE salt
-(
-    salt blob not null
-);
-
-CREATE TABLE record
-(
-    id integer not null
-        constraint record_pk
-            primary key autoincrement,
-    height integer not null,
-    ciphertext blob not null,
-    path text,
-    imported_id integer
-        constraint record_imported_private_key_id_fk
-            references imported_private_key
-);
-
-CREATE TABLE transition_nonce
-(
-    transition_id blob not null
-        constraint transition_nonce_pk
-            primary key,
-    nonce         blob not null
-);
-
-CREATE INDEX record_path_idx
-    ON record (path);
-
-CREATE TABLE version
-(
-    version integer not null
-);
-
-INSERT INTO version (version) VALUES (1);
-
-""")
+        await self.conn.executescript(open("init.sql").read())
         await self.conn.execute("INSERT INTO salt (salt) VALUES (?)", (salt,))
         await self.conn.execute("INSERT INTO master_wallet_key (key) VALUES (?)", (enc_master_key,))
         await self.conn.execute("INSERT INTO master_seed (seed) VALUES (?)", (self.encrypt(master_seed),))
