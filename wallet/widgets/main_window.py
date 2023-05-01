@@ -29,8 +29,12 @@ class MainWindow(QMainWindow, Ui_main_window):
         self.action_about.triggered.connect(self.about)
 
         # noinspection PyUnresolvedReferences
-        self.status_bar.add_widget(self.status_bar_label)
-        self.status_bar_label.text = "Wallet is locked"
+        self.status_bar.add_widget(self.status_bar_sync_progress_label)
+        self.status_bar_sync_progress_label.visible = False
+        self.status_bar.add_permanent_widget(self.status_bar_sync_progress_bar, -1)
+        self.status_bar_sync_progress_bar.visible = False
+        self.status_bar.add_permanent_widget(self.status_bar_locked_label)
+        self.status_bar_locked_label.text = "Locked"
 
         asyncio.create_task(self.init())
 
@@ -55,7 +59,7 @@ class MainWindow(QMainWindow, Ui_main_window):
         if not unlocked:
             QMessageBox.critical(self, "Error", "Failed to unlock wallet")
             return
-        self.status_bar_label.text = "Wallet is unlocked"
+        self.status_bar_locked_label.text = "Unlocked"
         self.action_lock.visible = True
         self.action_unlock.visible = False
         self.action_list_addresses.enabled = True
@@ -63,7 +67,7 @@ class MainWindow(QMainWindow, Ui_main_window):
 
     async def lock_wallet(self):
         await self.wallet_core.wallet.lock()
-        self.status_bar_label.text = "Wallet is locked"
+        self.status_bar_locked_label.text = "Locked"
         self.action_lock.visible = False
         self.action_unlock.visible = True
         self.action_list_addresses.enabled = False
